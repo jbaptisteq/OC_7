@@ -45,15 +45,19 @@ class User implements UserInterface
     */
     private $client;
 
-    public function __construct($username)
+    public function __construct()
     {
         $this->isActive = true;
-        $this->username = $username;
     }
 
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function setUsername($username)
+    {
+        $this->username = $username;
     }
 
     public function getSalt()
@@ -69,6 +73,18 @@ class User implements UserInterface
     public function setPassword($password)
     {
         $this->password = $password;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
+
+        return $this;
     }
 
     public function getRoles()
