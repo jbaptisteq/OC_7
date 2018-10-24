@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      collectionOperations={"get"},
  *      itemOperations={"get"}
  * )
- * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
+ * @ORM\Entity
  *
  */
 class Product
