@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba903ce42e1e3896cf3b2e8799d3fdda",
+    "content-hash": "fd1d11ffb38e5618f94baf8dd5537cbc",
     "packages": [
         {
             "name": "api-platform/api-pack",
@@ -2039,7 +2039,7 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v4.1.6",
+            "version": "v4.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
