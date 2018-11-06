@@ -10,3 +10,62 @@ new_user:
     path: /users
     controller: App\Controller\UserController::newUser
     methods: [POST]
+
+user_list:
+    path: '/api/users'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\UserController::listAction'
+        _api_resource_class: 'App\Entity\User'
+        _api_item_operation_name: 'special'
+
+user_get:
+    path: '/api/users/{id}'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\UserController::getAction'
+        _api_resource_class: 'App\Entity\User'
+        _api_item_operation_name: 'special'
+
+user_delete:
+    path: '/api/users/{id}'
+    methods: [DELETE]
+    defaults:
+        _controller: 'App\Controller\UserController::deleteAction'
+        _api_resource_class: 'App\Entity\User'
+        _api_item_operation_name: 'special'
+
+
+# ==== PRODUCT ====
+# consulter la liste des produits BileMo ;
+# -> GET /api/products
+# -> Aucun filtre
+# -> CACHE : 24H
+#
+# consulter les détails d’un produit BileMo ;
+# -> GET /api/poducts/{id}
+# -> Aucun filtre hormis l'id
+# -> Si l'id n'existe pas : 404
+#
+# ==== CLIENT ====
+# AUCUNE ROUTE
+#
+# ==== USER ====
+# consulter la liste des utilisateurs inscrits liés à un client sur le site web ;
+# -> GET /api/users
+# -> Ne récupère que les users associés au client effectuant la requête
+#
+# consulter le détail d’un utilisateur inscrit lié à un client ;
+# -> GET /api/users/{id}
+# -> Si l'user demandé appartient bien au client effectuant la requête on répond
+# -> Sinon Unauthorized 401
+# -> Si l'id n'existe pas : 404
+#
+# ajouter un nouvel utilisateur lié à un client
+# -> POST /api/users
+# -> Aucun filtre, on set le user->client en fonction du client->getId() effectuant la requête
+#
+# supprimer un utilisateur ajouté par un client
+# -> DELETE /api/users/{id}
+# -> Si l'user demandé appartient bien au client effectuant la requête on delete
+# -> Sinon Unauthorized 401
