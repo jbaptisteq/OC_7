@@ -17,16 +17,14 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 *
 * @ApiResource(
 *   collectionOperations={
-*       "get",
-*       "post"={
-*           "method"="POST",
-*           "path"="/users",
-*           "controller"=UserController::Class}
+*       "get"={"route_name"="user_list"},
+*       "post"={"route_name"="new_user"}
 *       },
 *   itemOperations={
-*       "get",
-*        "delete"},
-**   normalizationContext={"groups"={"read"}}
+*       "get"={"route_name"="user_get"},
+*       "delete"={"route_name"="user_delete"}
+*       },
+*   normalizationContext={"groups"={"read"}}
 * )
 */
 class User implements UserInterface
