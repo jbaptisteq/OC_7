@@ -9,60 +9,59 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use App\Entity\User;
 use App\Entity\Client;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\Guard\JWTTokenAuthenticator;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+
 
 class UserController extends AbstractController
 {
-    public function newUser(Request $request, UserPasswordEncoderInterface $encoder)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $repository = $this->getDoctrine()->getRepository(Client::class);
-
-        $username = $request->request->get('_username');
-        $password = $request->request->get('_password');
-        $id = $request->request->get('_client');
-        $client = $repository->findOneBy(['id' => $id]);
-
-        $user = new User();
-        $user->setUsername($username);
-        $user->setPassword($encoder->encodePassword($user, $password));
-        $user->setClient($client);
-        $em->persist($user);
-        $em->flush();
-
-        return new Response(sprintf('User %s successfully created', $user->getUsername()));
-    }
-
-    // Je met en cache une requête dite "safe"
-    // - Je vérifie si le cache existe pour un User1
-    //     - Si non, je le créé
-    // - Je return ce que j'ai dans mon cache
-
-    // Cas d'invalidation du cache de User1
-    // - Destruction du user
-    // - Expiration du cache
-
-    public function listAction(Request $request)
+    public function listAction(Request $request, JWTTokenManagerInterface $jwtManager, JWTTokenAuthenticator $jwtAuthenticator)
     {
         // Récupération du clientId à partir du token JWT
-        // $preAuthToken = $this->jwtAuthenticator->getCredentials($request);
-        // $client = $this->jwtManager->decode($preAuthToken);
-
+        $preAuthToken = $jwtAuthenticator->getCredentials($request);
+        $clientResource = $jwtManager->decode($preAuthToken);
         $em = $this->getDoctrine()->getManager();
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $user = $repository->findBy(['client' => $client->getId()]);
+        $repository = $this->getDoctrine()->getRepository(Client::class);
+        $client = $repository->findOneBy(['username' => $clientResource['username']]);
+
+        $cache = new FilesystemAdapter();
+        $userListCache = $cache->getItem('UserList.'.$client->getId());
+        $userListCache->expiresAfter(96400);
+
+        if (!$userListCache->isHit()) {
+            $em = $this->getDoctrine()->getManager();
+            $repository = $this->getDoctrine()->getRepository(User::class);
+            $users = $repository->findBy(['client' => $client->getId()]);
+
+            $userListCache->set($users);
+            $cache->save($userListCache);
+        }
+
+        return $userListCache->get();;
     }
 
-    public function getAction($id)
+    public function getAction($id, Request $request, JWTTokenManagerInterface $jwtManager, JWTTokenAuthenticator $jwtAuthenticator)
     {
+        // Récupération du clientId à partir du token JWT
+        $preAuthToken = $jwtAuthenticator->getCredentials($request);
+        $clientResource = $jwtManager->decode($preAuthToken);
+        $em = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()->getRepository(Client::class);
+        $client = $repository->findOneBy(['username' => $clientResource['username']]);
+
         $cache = new FilesystemAdapter();
         $userCache = $cache->getItem('User.'.$id);
         $userCache->expiresAfter(60); // Set expiration to 60 seconds
-        // $userCache->expiresAfter(DateInterval::createFromDateString('1 hour'));
 
         if (!$userCache->isHit()) {
             $em = $this->getDoctrine()->getManager();
             $repository = $this->getDoctrine()->getRepository(User::class);
             $user = $repository->findOneBy(['id' => $id]);
+            if ($user->getClient()->getId() !== $client->getId()) {
+                $response = new Response('Vous n\'avez pas les droits sur cet utilisateur.', Response::HTTP_UNAUTHORIZED, array('Content-Type' => 'text/plain'));
+                return $response;
+            }
             $userCache->set($user);
             $cache->save($userCache);
         }
@@ -70,9 +69,50 @@ class UserController extends AbstractController
         return $userCache->get();
     }
 
-    public function deleteAction($id)
+    public function postAction(Request $request, JWTTokenManagerInterface $jwtManager, JWTTokenAuthenticator $jwtAuthenticator)
     {
-        // Todo : Suppression normale de l'user en BDD
+        // Récupération du clientId à partir du token JWT
+        $preAuthToken = $jwtAuthenticator->getCredentials($request);
+        $clientResource = $jwtManager->decode($preAuthToken);
+        $em = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()->getRepository(Client::class);
+        $client = $repository->findOneBy(['username' => $clientResource['username']]);
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()->getRepository(User::class);
+
+        $name = $request->request->get('name');
+
+        $user = new User();
+        $user->setName($name);
+        $user->setClient($client);
+        $em->persist($user);
+        $em->flush();
+
+        return new Response('Utilisateur enregistré', Response::HTTP_CREATED, array('Content-Type' => 'text/plain'));
+    }
+
+    public function deleteAction($id, Request $request, JWTTokenManagerInterface $jwtManager, JWTTokenAuthenticator $jwtAuthenticator)
+    {
+        // Récupération du clientId à partir du token JWT
+        $preAuthToken = $jwtAuthenticator->getCredentials($request);
+        $clientResource = $jwtManager->decode($preAuthToken);
+        $em = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()->getRepository(Client::class);
+        $client = $repository->findOneBy(['username' => $clientResource['username']]);
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        $user = $repository->findOneBy(['id' => $id]);
+
+        $clientUserDeleted = $user->getClient();
+
+        if ($clientUserDeleted !== $client) {
+            $response = new Response('Vous n\'avez pas le droit de supprimé cet utilisateur.', Response::HTTP_UNAUTHORIZED, array('Content-Type' => 'text/plain'));
+            return $response;
+        }
+        $em->remove($user);
+        $em->flush();
 
         // Delete cache for this user
         $cache = new FilesystemAdapter();
@@ -82,6 +122,6 @@ class UserController extends AbstractController
             $cache->deleteItem('User.'.$id);
         }
 
-        return new Response('Pouet');
+        return new Response('Utilisateur supprimé');
     }
 }
