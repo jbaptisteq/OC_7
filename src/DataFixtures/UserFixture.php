@@ -22,19 +22,20 @@ class UserFixture extends Fixture
     {
 
         //create 3 client fake
-        for($c = 1; $c <= 3; $c++) {
+        for ($c = 1; $c <= 3; $c++) {
             $client = new Client();
-            $client->setName("client$c");
+            $client->setName("Company$c");
+            $client->setUsername("client$c");
+
+            $password = $this->encoder->encodePassword($client, 'test');
+            $client->setPassword($password);
+
             $manager->persist($client);
 
             //create 5 user for 1 client
-            for($u = 1; $u <= 5; $u++) {
+            for ($u = 1; $u <= 5; $u++) {
                 $user = new User();
-
-                $password = $this->encoder->encodePassword($user, 'test');
-
-                $user->setUsername($client->getName()."user$u");
-                $user->setPassword($password);
+                $user->setName($client->getName()."user$u");
                 $user->setClient($client);
 
                 $manager->persist($user);
