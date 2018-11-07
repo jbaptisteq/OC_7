@@ -5,18 +5,19 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  *
- * @ApiResource(
- *      itemOperations={"get"},
- *      collectionOperations={"get"}
- * )
+ * 
  */
-class Client
+class Client implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -32,12 +33,31 @@ class Client
     private $name;
 
     /**
+    * @ORM\Column(type="string", length=25, unique=true)
+    * @Assert\NotBlank
+    * @Groups("read")
+    */
+    private $username;
+
+    /**
+    * @ORM\Column(type="string", length=500)
+    */
+    private $password;
+
+    /**
+    * @ORM\Column(name="is_active", type="boolean")
+    * @Groups("read")
+    */
+    private $isActive;
+
+    /**
      * @ORM\OneToMany(targetEntity="User", mappedBy="client")
      */
     private $users;
 
     public function __construct()
     {
+        $this->isActive = true;
         $this->users = new ArrayCollection();
     }
 
@@ -56,6 +76,36 @@ class Client
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 
     /**
@@ -87,5 +137,15 @@ class Client
         }
 
         return $this;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 }
