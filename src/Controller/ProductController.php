@@ -35,7 +35,6 @@ class ProductController extends AbstractController
         $productCache = $cache->getItem('Product.'.$id);
 
         if (!$productCache->isHit()) {
-            $em = $this->getDoctrine()->getManager();
             $repository = $this->getDoctrine()->getRepository(Product::class);
             $product = $repository->findOneBy(['id' => $id]);
             $productCache->set($product);
