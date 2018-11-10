@@ -27,7 +27,7 @@ class UserController extends AbstractController
 
         $cache = new FilesystemAdapter();
         $userListCache = $cache->getItem('UserList.'.$client->getId());
-        $userListCache->expiresAfter(96400);
+        $userListCache->expiresAfter(86400);
 
         if (!$userListCache->isHit()) {
             $em = $this->getDoctrine()->getManager();
@@ -52,7 +52,7 @@ class UserController extends AbstractController
 
         $cache = new FilesystemAdapter();
         $userCache = $cache->getItem('User.'.$id);
-        $userCache->expiresAfter(60); // Set expiration to 60 seconds
+        $userCache->expiresAfter(86400); // Set expiration to 1 day
 
         if (!$userCache->isHit()) {
             $em = $this->getDoctrine()->getManager();
