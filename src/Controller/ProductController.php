@@ -11,7 +11,7 @@ use App\Entity\Product;
 
 class ProductController extends AbstractController
 {
-    public function listAction(Request $request)
+    public function listAction()
     {
         $cache = new FilesystemAdapter();
         // Create Cache with 1 day lifetime
@@ -19,7 +19,6 @@ class ProductController extends AbstractController
         $productListCache->expiresAfter(86400);
 
         if (!$productListCache->isHit()) {
-            $em = $this->getDoctrine()->getManager();
             $repository = $this->getDoctrine()->getRepository(Product::class);
             $productList = $repository->findAll();
             $productListCache->set($productList);
