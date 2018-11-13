@@ -54,3 +54,19 @@ product_get:
         _controller: 'App\Controller\ProductController::getAction'
         _api_resource_class: 'App\Entity\Product'
         _api_item_operation_name: 'special'
+
+client_list:
+    path: '/api/clients'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\ClientController::listAction'
+        _api_resource_class: 'App\Entity\Client'
+        _api_collection_operation_name: 'special'
+
+client_get:
+    path: '/api/clients/{id}'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\ClientController::getAction'
+        _api_resource_class: 'App\Entity\Client'
+        _api_item_operation_name: 'special'

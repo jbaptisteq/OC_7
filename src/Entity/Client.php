@@ -16,10 +16,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     normalizationContext={"groups"={"read"}},
  *     collectionOperations={
- *          "get"
+ *          "get"={"route_name"="client_list"}
  *      },
  *      itemOperations={
- *          "get"
+ *          "get"={"route_name"="client_get"}
  *      }
  * )
  */
