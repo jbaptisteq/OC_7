@@ -19,7 +19,7 @@ class ClientController extends AbstractController
         return $response;
     }
 
-    public function getAction($id)
+    public function getAction()
     {
         $response = new Response('Vous n\'avez pas les droits sur cette commande.', Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'text/plain']);
         return $response;
