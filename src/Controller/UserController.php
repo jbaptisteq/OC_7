@@ -59,7 +59,7 @@ class UserController extends AbstractController
             $repository = $this->getDoctrine()->getRepository(User::class);
             $user = $repository->findOneBy(['id' => $id]);
             if ($user->getClient()->getId() !== $client->getId()) {
-                $response = new Response('Vous n\'avez pas les droits sur cet utilisateur.', Response::HTTP_UNAUTHORIZED, array('Content-Type' => 'text/plain'));
+                $response = new Response('Vous n\'avez pas les droits sur cet utilisateur.', Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'text/plain']);
                 return $response;
             }
             $userCache->set($user);
@@ -89,7 +89,14 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        return new Response('Utilisateur enregistré', Response::HTTP_CREATED, array('Content-Type' => 'text/plain'));
+        $cache = new FilesystemAdapter();
+        $userCache = $cache->getItem('UserList.'.$client->getId());
+
+        if ($userCache->isHit()) {
+            $cache->deleteItem('UserList.'.$client->getId());
+        }
+
+        return new Response('Utilisateur enregistré', Response::HTTP_CREATED, ['Content-Type' => 'text/plain', 'Location' => '/api/users/'.$user->getId()]);
     }
 
     public function deleteAction($id, Request $request, JWTTokenManagerInterface $jwtManager, JWTTokenAuthenticator $jwtAuthenticator)
@@ -108,7 +115,7 @@ class UserController extends AbstractController
         $clientUserDeleted = $user->getClient();
 
         if ($clientUserDeleted !== $client) {
-            $response = new Response('Vous n\'avez pas le droit de supprimé cet utilisateur.', Response::HTTP_UNAUTHORIZED, array('Content-Type' => 'text/plain'));
+            $response = new Response('Vous n\'avez pas le droit de supprimer cet utilisateur.', Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'text/plain']);
             return $response;
         }
         $em->remove($user);
@@ -122,6 +129,6 @@ class UserController extends AbstractController
             $cache->deleteItem('User.'.$id);
         }
 
-        return new Response('Utilisateur supprimé');
+        return new Response('Utilisateur supprimé', Response::HTTP_OK, ['Content-Type' => 'text/plain']);
     }
 }

@@ -43,5 +43,4 @@ class ProductController extends AbstractController
 
         return $productCache->get();
     }
-
 }
