@@ -1,4 +1,7 @@
 # OpenClassroom - PHP/Symphony Developer
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ddb5011a86ba4057a4606cae5b11eb15)](https://app.codacy.com/app/jbaptisteq/OC_7?utm_source=github.com&utm_medium=referral&utm_content=jbaptisteq/OC_7&utm_campaign=Badge_Grade_Settings)
+
 # Project 7 _ Créez un web service exposant une API
 
 ## Link of the Path
