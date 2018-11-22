@@ -6,7 +6,10 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "api-platform/api-pack": "^1.1",
+        "doctrine/annotations": "^1.6",
+        "doctrine/doctrine-fixtures-bundle": "^3.0",
         "lexik/jwt-authentication-bundle": "^2.5",
+        "symfony/cache": "*",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
@@ -14,7 +17,8 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "symfony/dotenv": "*"
+        "symfony/dotenv": "*",
+        "symfony/phpunit-bridge": "*"
     },
     "config": {
         "preferred-install": {

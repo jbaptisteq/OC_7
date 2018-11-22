@@ -3,12 +3,30 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
-/** * @ORM\Table(name="users") * @ORM\Entity */
-class User implements UserInterface
+/**
+* @ORM\Table(name="users")
+* @ORM\Entity
+*
+* @ApiResource(
+*   collectionOperations={
+*       "get"={"route_name"="user_list"},
+*       "post"={"route_name"="user_post"}
+*       },
+*   itemOperations={
+*       "get"={"route_name"="user_get"},
+*       "delete"={"route_name"="user_delete"}
+*       }
+* )
+*/
+class User
 {
-    /** * @ORM\Column(type="integer")
+    /**
+    * @ORM\Column(type="integer")
     * @ORM\Id
     * @ORM\GeneratedValue(strategy="AUTO")
     */
@@ -16,52 +34,45 @@ class User implements UserInterface
 
     /**
     * @ORM\Column(type="string", length=25, unique=true)
+    * @Assert\NotBlank
     */
-    private $username;
+    private $name;
 
     /**
-    * @ORM\Column(type="string", length=500)
+    * @ORM\ManyToOne(targetEntity="Client", inversedBy="users")
+    * @ORM\JoinColumn(nullable=false, referencedColumnName="id")
+    * @Assert\NotBlank
     */
-    private $password;
+    private $client;
 
-    /**
-    * @ORM\Column(name="is_active", type="boolean")
-    */
-    private $isActive;
-
-    public function __construct($username)
+    public function __construct()
     {
-        $this->isActive = true;
-        $this->username = $username;
     }
 
-    public function getUsername()
+    public function getId(): ?int
     {
-        return $this->username;
+        return $this->id;
     }
 
-    public function getSalt()
+    public function getName()
     {
-        return null;
+        return $this->name;
     }
 
-    public function getPassword()
+    public function setName($name)
     {
-        return $this->password;
+        $this->name = $name;
     }
 
-    public function setPassword($password)
+    public function getClient(): Client
     {
-        $this->password = $password;
-    } 
-
-    public function getRoles()
-    {
-        return array('ROLE_USER');
+        return $this->client;
     }
 
-    public function eraseCredentials()
+    public function setClient(Client $client): self
     {
+        $this->client = $client;
 
+        return $this;
     }
 }

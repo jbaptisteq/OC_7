@@ -1,11 +1,72 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
-register:
-    path: /register
-    controller: App\Controller\AuthController::register
-    methods: POST
 
 login_check:
     path: /login_check
     methods: [POST]
+
+user_list:
+    path: '/api/users'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\UserController::listAction'
+        _api_resource_class: 'App\Entity\User'
+        _api_collection_operation_name: 'special'
+
+user_get:
+    path: '/api/users/{id}'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\UserController::getAction'
+        _api_resource_class: 'App\Entity\User'
+        _api_item_operation_name: 'special'
+
+user_post:
+    path: '/api/users'
+    methods: [POST]
+    defaults:
+        _controller: 'App\Controller\UserController::postAction'
+        _api_resource_class: 'App\Entity\User'
+        _api_collection_operation_name: 'special'
+
+
+user_delete:
+    path: '/api/users/{id}'
+    methods: [DELETE]
+    defaults:
+        _controller: 'App\Controller\UserController::deleteAction'
+        _api_resource_class: 'App\Entity\User'
+        _api_item_operation_name: 'special'
+
+product_list:
+    path: '/api/products'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\ProductController::listAction'
+        _api_resource_class: 'App\Entity\Product'
+        _api_collection_operation_name: 'special'
+
+product_get:
+    path: '/api/products/{id}'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\ProductController::getAction'
+        _api_resource_class: 'App\Entity\Product'
+        _api_item_operation_name: 'special'
+
+client_list:
+    path: '/api/clients'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\ClientController::listAction'
+        _api_resource_class: 'App\Entity\Client'
+        _api_collection_operation_name: 'special'
+
+client_get:
+    path: '/api/clients/{id}'
+    methods: [GET]
+    defaults:
+        _controller: 'App\Controller\ClientController::getAction'
+        _api_resource_class: 'App\Entity\Client'
+        _api_item_operation_name: 'special'

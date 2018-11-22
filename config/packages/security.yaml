@@ -5,13 +5,13 @@ security:
         ROLE_ADMIN: [ROLE_USER]
 
     encoders:
-        App\Entity\User:
+        App\Entity\Client:
             algorithm: bcrypt
 
     providers:
         entity_provider:
             entity:
-                class: App\Entity\User
+                class: App\Entity\Client
                 property: username
 
     firewalls:
@@ -27,11 +27,6 @@ security:
                 check_path: /login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-        register:
-            pattern: ^/register
-            stateless: true
-            anonymous: true
 
         api:
             pattern: ^/api/
