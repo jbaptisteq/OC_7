@@ -8,6 +8,7 @@
 
  ## Quality Test :
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4449206937143ba8ec3626d4a4e2b19)](https://www.codacy.com/app/jbaptisteq/OC_7?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jbaptisteq/OC_7&amp;utm_campaign=Badge_Grade)
 
  PhPUnit Test present in tests folder:
  ```
