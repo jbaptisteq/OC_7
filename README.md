@@ -110,6 +110,7 @@
    Docs
    ```
    Diagrams\List.md
+   API Documentation also avaible in png and pdf for just reading.
    ```
 
   ## Built with
