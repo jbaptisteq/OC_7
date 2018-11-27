@@ -110,7 +110,8 @@
    Docs
    ```
    Diagrams\List.md
-   API Documentation also avaible in png and pdf for just reading.
+   API Documentation also avaible in png and pdf for just reading or online at : https://api-bilemo-p7-jbq.api-docs.io/0.0.1/api/retrieves-the-collection-of-client-resources
+
    ```
 
   ## Built with
