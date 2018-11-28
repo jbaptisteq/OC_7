@@ -38,7 +38,7 @@ class UserController extends AbstractController
             $cache->save($userListCache);
         }
 
-        return $userListCache->get();;
+        return $userListCache->get();
     }
 
     public function getAction($id, Request $request, JWTTokenManagerInterface $jwtManager, JWTTokenAuthenticator $jwtAuthenticator)
