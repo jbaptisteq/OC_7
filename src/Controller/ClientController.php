@@ -15,13 +15,13 @@ class ClientController extends AbstractController
 {
     public function listAction()
     {
-        $response = new Response('Vous n\'avez pas les droits sur cette commande.', Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'text/plain']);
+        $response = new Response('Vous n\'avez pas les droits sur cette commande.', 403, ['Content-Type' => 'text/plain']);
         return $response;
     }
 
     public function getAction()
     {
-        $response = new Response('Vous n\'avez pas les droits sur cette commande.', Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'text/plain']);
+        $response = new Response('Vous n\'avez pas les droits sur cette commande.', 403, ['Content-Type' => 'text/plain']);
         return $response;
     }
 }
